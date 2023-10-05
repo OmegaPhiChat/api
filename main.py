@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.responses import JSONResponse
 import pusher
 from dotenv import load_dotenv, find_dotenv
 import os
@@ -19,4 +20,7 @@ async def create_user(username):
     pusher_client.trigger("global", "message", {
         "message": f"{username} has joined"
     })
-    return username
+    content = username
+    response = JSONResponse(content= content)
+    response.set_cookie(key="username", value=username)
+    return response

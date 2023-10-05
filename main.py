@@ -5,17 +5,14 @@ import os
 
 app = FastAPI()
 
-
-@app.get("/")
-async def root():
-    return {"message": "Hello World"}
-
 load_dotenv(find_dotenv())
-AppID = os.getenv("app_id")
-Key = os.getenv("key")
-Secret = os.getenv("secret")
-Cluster = os.getenv("cluster")
-pusher_client = pusher.Pusher(app_id = AppID, key = Key, secret = Secret, cluster = Cluster)
+
+pusher_client = pusher.Pusher(
+    app_id = os.getenv("PUSHER_APP_ID"),
+    key = os.getenv("PUSHER_KEY"),
+    secret = os.getenv("PUSHER_SECRET"),
+    cluster = os.getenv("PUSHER_CLUSTER")
+)
 
 @app.post("/join")
 async def create_user(username):

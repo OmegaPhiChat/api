@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 import pusher
 from dotenv import load_dotenv, find_dotenv
@@ -24,3 +25,10 @@ async def create_user(username):
     response = JSONResponse(content= content)
     response.set_cookie(key="username", value=username)
     return response
+
+@app.post("/message")
+async def create_message(message,request: Request):
+    name = request.cookies.get("username")
+    pusher_client.trigger("global", "message", {
+        "message": f"{name}:{message}"
+    })

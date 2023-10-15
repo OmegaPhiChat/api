@@ -15,6 +15,10 @@ pusher_client = pusher.Pusher(
     cluster = os.getenv("PUSHER_CLUSTER")
 )
 
+@app.get("/")
+async def index():
+    return "Hello Buddha"
+
 @app.post("/join")
 async def create_user(username):
     pusher_client.trigger("global", "message", {

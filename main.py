@@ -18,6 +18,7 @@ pusher_client = pusher.Pusher(
 @app.middleware("http")
 async def add_response_header(request: Request, call_next):
     response = await call_next(request)
+    response.headers["Access-Control-Allow-Credentials"] = 'true'
     response.headers["Access-Control-Allow-Origin"] = os.getenv("WEB_URL")
     return response
 

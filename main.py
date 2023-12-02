@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Response
 from fastapi.requests import Request
 from fastapi.responses import JSONResponse
 import pusher
@@ -28,11 +28,13 @@ async def create_user(username):
     content = username
     response = JSONResponse(content= content)
     response.set_cookie(key="username", value=username)
+    response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
 @app.post("/message")
-async def create_message(message,request: Request):
+async def create_message(message,request: Request, response: Response):
     name = request.cookies.get("username")
     pusher_client.trigger("global", "message", {
         "message": f"{name}:{message}"
     })
+    response.headers["Access-Control-Allow-Origin"] = "*"

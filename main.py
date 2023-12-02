@@ -15,6 +15,11 @@ pusher_client = pusher.Pusher(
     secret = os.getenv("PUSHER_SECRET"),
     cluster = os.getenv("PUSHER_CLUSTER")
 )
+@app.middleware("http")
+async def add_response_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Access-Control-Allow-Origin"] = "*"
+    return response
 
 @app.get("/")
 async def index():
@@ -28,7 +33,6 @@ async def create_user(username):
     content = username
     response = JSONResponse(content= content)
     response.set_cookie(key="username", value=username)
-    response.headers["Access-Control-Allow-Origin"] = "*"
     return response
 
 @app.post("/message")
@@ -37,4 +41,3 @@ async def create_message(message,request: Request, response: Response):
     pusher_client.trigger("global", "message", {
         "message": f"{name}:{message}"
     })
-    response.headers["Access-Control-Allow-Origin"] = "*"

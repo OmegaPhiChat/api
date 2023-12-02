@@ -18,7 +18,7 @@ pusher_client = pusher.Pusher(
 @app.middleware("http")
 async def add_response_header(request: Request, call_next):
     response = await call_next(request)
-    response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Origin"] = os.getenv("WEB_URL")
     return response
 
 @app.get("/")
@@ -32,7 +32,7 @@ async def create_user(username):
     })
     content = username
     response = JSONResponse(content= content)
-    response.set_cookie(key="username", value=username)
+    response.set_cookie(key="username", value=username, secure=True, samesite='none', httponly=True)
     return response
 
 @app.post("/message")
